@@ -1,9 +1,25 @@
+/* This is an Arduino sketch intended for use with the the Peggy 2,
+ * (http://shop.evilmadscientist.com/tinykitlist/75-peggy2). It displays a
+ * rapidly changing, qulit-like bit pattern.
+ *
+ * Copyright Peter A. Webb, 2015
+ *
+ * The code below includes modified portions of a sketch called peggy_life,
+ * which was written by Windell Oskay. Portions of that sketch were reworked
+ * from a program by David Gustafik. Their code was licensed under GPLv2, and
+ * I am providing this code lincensed under GPLv3.
+ *
+ * Portions Copyright Windell H. Oskay, 2008
+ * Portions Copyright David Gustafik, 2007
+ *
+ */
 
 #include <avr/io.h>
 #include <stdlib.h>
 #include <avr/eeprom.h>
 #include <stdint.h>
 
+// The Peggy 2 display is 25 pixels square.
 #define CELLS_X 25
 #define CELLS_Y 25
 
@@ -38,9 +54,9 @@ unsigned char get_cell(unsigned long from[],  signed char x, signed char y)
 static void set_cell(unsigned long to[], signed char x, signed char y, bool value)
 {
   if(value)
-    to[x] |= (unsigned long) 1 <<  y;
+    to[x] |= (unsigned long)1 << y;
   else
-    to[x] &= ~( (unsigned long) 1 << y);
+    to[x] &= ~((unsigned long)1 << y);
 
   return;
 }
@@ -139,7 +155,7 @@ void setup()
 
   DDRB = ( 1 << 3 ) | (1 << 5) | (1 << 2) | (1 << 1);
 
-  //ENABLE SPI, MASTER, CLOCK RATE fck/4:   //TEMPORARY:: 1/128
+  // ENABLE SPI, MASTER, CLOCK RATE fck/4:   //TEMPORARY:: 1/128
   SPCR = (1 << SPE) | ( 1 << MSTR );//| ( 1 << SPR0 );//| ( 1 << SPR1 ) | ( 1 << CPOL );
 
   SPI_TX(0);
@@ -170,6 +186,12 @@ void loop()
       unsigned int x_coord = x_pos + x;
       unsigned int y_coord = y_pos + y;
 
+
+      // The two dimensional bitmap function computed here is mentioned in
+      // Knuth, AoCP Vol. 4A, where it is described as a "patchwork quilt".
+      // Knuth says it was designed by D. Sleator in 1976. It produces a
+      // wide variety of interesting patterns, but is extremely simple to
+      // compute quickly, which is why I've used it here.
       unsigned int k = ((x_coord ^ ~y_coord) & ((x_coord - 350) >> 3));
       k = k * k;
       k = ((k >> 12) & 1);
