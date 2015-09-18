@@ -1,6 +1,6 @@
 /* This is an Arduino sketch intended for use with the the Peggy 2,
  * (http://shop.evilmadscientist.com/tinykitlist/75-peggy2). It displays a
- * rapidly changing, qulit-like bit pattern.
+ * rapidly changing, quilt-like bit pattern.
  *
  * Copyright Peter A. Webb, 2015
  *
@@ -81,14 +81,14 @@ static void display(unsigned long from[])
 
 void SPI_TX(char cData)
 {
-  SPDR = cData; //Start Transmission
-  while (!(SPSR & _BV(SPIF))); //Wait for transmission complete:
+  SPDR = cData; // Start Transmission
+  while (!(SPSR & _BV(SPIF))); // Wait for transmission complete:
 }
 
 void light_leds()
 {
   unsigned int k = 0;
-  while (k < refreshNum)  // k must be at least 1
+  while (k < refreshNum)
   {
     unsigned int j = 0;
     while (j < 25)
@@ -120,7 +120,7 @@ void light_leds()
 
       SPI_TX(out4);
 
-      PORTB |= _BV(1);    //Latch Pulse
+      PORTB |= _BV(1);    // Latch Pulse
       PORTB &= ~( _BV(1));
 
       j++;
